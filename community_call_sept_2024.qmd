@@ -101,24 +101,24 @@ denali_pm25 <- query_agileweb(
 
 ```{r save, eval=FALSE}
 pm25_list <- list(
-  "Soldotna" = soldotna_pm25,
-  "Ninilchik" = ninilchik_pm25,
-  "Homer" = homer_pm25,
-  "Seward" = seward_pm25,
-  "Ketchikan" = ketchikan_pm25,
-  "Haines" = haines_pm25,
-  "Wrangell" = wrangell_pm25,
-  "Hoonah" = hoonah_pm25,
-  "Skagway" = skagway_pm25,
-  "Sitka" = sitka_pm25,
-  "Juneau 5th" = juneau_5th_pm25,
-  "Juneau Museum" = juneau_mus_pm25,
-  "Tok" = tok_pm25,
   "Badger" = badger_pm25,
-  "Galena" = galena_pm25,
   "Delta Junction" = delta_pm25,
+  "Denali NP" = denali_pm25,
+  "Galena" = galena_pm25,
   "Goldstream" = goldstream_pm25,
-  "Denali NP" = denali_pm25
+  "Haines" = haines_pm25,
+  "Homer" = homer_pm25,
+  "Hoonah" = hoonah_pm25,
+  "Juneau Museum" = juneau_mus_pm25,
+  "Juneau 5th" = juneau_5th_pm25,
+  "Ketchikan" = ketchikan_pm25,
+  "Ninilchik" = ninilchik_pm25,
+  "Seward" = seward_pm25,
+  "Sitka" = sitka_pm25,
+  "Skagway" = skagway_pm25,
+  "Soldotna" = soldotna_pm25,
+  "Tok" = tok_pm25,
+  "Wrangell" = wrangell_pm25
 )
 rm(key)
 save.image("community_call_sept_2024.RData")
@@ -142,7 +142,7 @@ fluidPage(
         "Select a sensor",
         choices = names(pm25_list),
         multiple = FALSE,
-        selected = "Soldotna"
+        selected = "Badger"
       )
     ),
     column(
@@ -152,7 +152,7 @@ fluidPage(
         "Select a sensor",
         choices = names(pm25_list),
         multiple = FALSE,
-        selected = "Ninilchik"
+        selected = "Delta Junction"
       )
     )
   ),
