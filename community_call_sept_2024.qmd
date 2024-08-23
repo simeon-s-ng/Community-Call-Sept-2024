@@ -1,0 +1,319 @@
+---
+title: "Community Call September 2024"
+author: Simeon Ng
+date: "`r Sys.Date()`"
+format: 
+  html:
+    grid:
+      body-width: 1600px
+      gutter-width: 100px
+server: shiny
+---
+
+*Data last updated: 08/23/2024*
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 10,
+  fig.height = 10,
+  comment = ''
+)
+```
+
+```{r libraries, include=FALSE}
+library(tidyverse)
+library(keyring)
+library(akairmonitorr)
+library(shinyWidgets)
+library(bslib)
+library(bsicons)
+```
+
+```{r key, eval=FALSE}
+key <- key_get("aa_key")
+```
+
+```{r import-quant-southcentral-pm25, eval=FALSE}
+soldotna_pm25 <- query_agileweb(
+  "Quant_MOD00460", "PM25", start = "2024-05-13T00:00:00", api_key =  key
+) |> clean_pm25()
+ninilchik_pm25 <- query_agileweb(
+  "Quant_MOD00461", "PM25", start = "2024-05-13T00:00:00", api_key =  key
+) |> clean_pm25()
+homer_pm25 <- query_agileweb(
+  "Quant_MOD00464", "PM25", start = "2024-05-14T00:00:00", api_key =  key
+) |> clean_pm25()
+seward_pm25 <- query_agileweb(
+  "Quant_MOD00465", "PM25", start = "2024-06-05T00:00:00", api_key = key
+) |> clean_pm25()
+```
+
+```{r import-quant-southeast-pm25, eval=FALSE}
+ketchikan_pm25 <- query_agileweb(
+  "Quant_MOD00449", "PM25", start = "2024-01-31T00:00:00", api_key = key
+) |> clean_pm25()
+haines_pm25 <- query_agileweb(
+  "Quant_MOD00450", "PM25", start = "2024-01-30T00:00:00", api_key = key
+) |> clean_pm25()
+wrangell_pm25 <- query_agileweb(
+  "Quant_MOD00451", "PM25", start = "2024-02-01T00:00:00", api_key = key
+) |> clean_pm25()
+hoonah_pm25 <- query_agileweb(
+  "Quant_MOD00452", "PM25", start = "2024-01-30T00:00:00", api_key = key
+) |> clean_pm25()
+skagway_pm25 <- query_agileweb(
+  "Quant_MOD00453", "PM25", start = "2024-01-31T00:00:00", api_key = key
+) |> clean_pm25()
+sitka_pm25 <- query_agileweb(
+  "Quant_MOD00454", "PM25", start = "2024-03-21T00:00:00", api_key = key
+) |> clean_pm25()
+juneau_5th_pm25 <- query_agileweb(
+  "Quant_MOD00455", "PM25", start = "2024-01-29T00:00:00", api_key = key
+) |> clean_pm25()
+juneau_mus_pm25 <- query_agileweb(
+  "Quant_MOD00456", "PM25", start = "2024-01-29T00:00:00", api_key = key
+) |> clean_pm25()
+```
+
+```{r import-quant-interior-pm25, eval=FALSE}
+tok_pm25 <- query_agileweb(
+  "Quant_MOD00444", "PM25", start = "2023-10-26T00:00:00", api_key = key
+) |> clean_pm25()
+badger_pm25 <- query_agileweb(
+  "Quant_MOD00445", "PM25", start = "2024-03-21T00:00:00", api_key = key
+) |> clean_pm25()
+galena_pm25 <- query_agileweb(
+  "Quant_MOD00446", "PM25", start = "2023-09-27T00:00:00", api_key = key
+) |> clean_pm25()
+delta_pm25 <- query_agileweb(
+  "Quant_MOD00447", "PM25", start = "2023-11-02T00:00:00", api_key = key
+) |> clean_pm25()
+goldstream_pm25 <- query_agileweb(
+  "Quant_MOD00448", "PM25", start = "2024-02-20T00:00:00", api_key = key
+) |> clean_pm25()
+denali_pm25 <- query_agileweb(
+  "Quant_MOD00457", "PM25", start = "2024-06-12T00:00:00", api_key = key
+) |> clean_pm25()
+```
+
+```{r save, eval=FALSE}
+pm25_list <- list(
+  "Soldotna" = soldotna_pm25,
+  "Ninilchik" = ninilchik_pm25,
+  "Homer" = homer_pm25,
+  "Seward" = seward_pm25,
+  "Ketchikan" = ketchikan_pm25,
+  "Haines" = haines_pm25,
+  "Wrangell" = wrangell_pm25,
+  "Hoonah" = hoonah_pm25,
+  "Skagway" = skagway_pm25,
+  "Sitka" = sitka_pm25,
+  "Juneau 5th" = juneau_5th_pm25,
+  "Juneau Museum" = juneau_mus_pm25,
+  "Tok" = tok_pm25,
+  "Badger" = badger_pm25,
+  "Galena" = galena_pm25,
+  "Delta Junction" = delta_pm25,
+  "Goldstream" = goldstream_pm25,
+  "Denali NP" = denali_pm25
+)
+rm(key)
+save.image("community_call_sept_2024.RData")
+```
+
+```{r load data}
+load("community_call_sept_2024.RData")
+```
+
+```{r ui}
+vb_theme_max <- value_box_theme(bg = "#12436D", fg = "#FFFFFF")
+
+fluidPage(
+  br(),
+  # Select sensor input ----
+  fluidRow(
+    column(
+      6,
+      pickerInput(
+        "pm25_L",
+        "Select a sensor",
+        choices = names(pm25_list),
+        multiple = FALSE,
+        selected = "Soldotna"
+      )
+    ),
+    column(
+      6,
+      pickerInput(
+        "pm25_R",
+        "Select a sensor",
+        choices = names(pm25_list),
+        multiple = FALSE,
+        selected = "Ninilchik"
+      )
+    )
+  ),
+  # Output pm25 value cards ----
+  fluidRow(
+    column(
+      3,
+      value_box(
+        title = "Maximum PM2.5 Concentration",
+        value = textOutput("pm25_max_L"),
+        showcase = bs_icon("chevron-bar-up"),
+        theme = "bg-gradient-blue-green",
+        height = "150px"
+      )
+    ),
+    column(
+      3,
+      value_box(
+        title = "Hours over 9 µg/m³",
+        value = textOutput("pm25_hours_L"),
+        showcase = bs_icon("exclamation-triangle-fill"),
+        theme = "warning",
+        height = "150px"
+      )
+    ),
+    column(
+      3,
+      value_box(
+        title = "Maximum PM2.5 Concentration",
+        value = textOutput("pm25_max_R"),
+        showcase = bs_icon("chevron-bar-up"),
+        theme = "bg-gradient-blue-green",
+        height = "150px"
+      )
+    ),
+    column(
+      3,
+      value_box(
+        title = "Hours over 9 µg/m³",
+        value = textOutput("pm25_hours_R"),
+        showcase = bs_icon("exclamation-triangle-fill"),
+        theme = "warning",
+        height = "150px"
+      )
+    )
+  ),
+  # Output day&hour diurnal plots ----
+  fluidRow(
+    column(
+      6,
+      plotOutput("pm25_plot_L")
+    ),
+    column(
+      6,
+      plotOutput("pm25_plot_R")
+    )
+  ),
+  # Output month diurnal plots ----
+  fluidRow(
+    column(
+      3,
+      plotOutput("pm25_plot_L_month")
+    ),
+    column(
+      3,
+      plotOutput("pm25_plot_L_day")
+    ),
+  # Output day diurnal plots ----
+    column(
+      3,
+      plotOutput("pm25_plot_R_month")
+    ),
+    column(
+      3,
+      plotOutput("pm25_plot_R_day")
+    )
+  )
+)
+```
+
+```{r server}
+#| context: server
+library(shiny)
+library(tidyverse)
+library(akairmonitorr)
+
+load("community_call_sept_2024.RData")
+
+# Reactive data ----
+
+quant_max_L <- reactive({
+  max(pm25_list[[input$pm25_L]]$pm25)
+})
+
+quant_max_R <- reactive({
+  max(pm25_list[[input$pm25_R]]$pm25)
+})
+
+quant_hours_L <- reactive({
+  pm25_list[[input$pm25_L]] |> 
+    filter(pm25 >= 35) |> 
+    summarise(n = n())
+})
+
+quant_hours_R <- reactive({
+  pm25_list[[input$pm25_R]] |> 
+    filter(pm25 >= 35) |> 
+    summarise(n = n())
+})
+
+quant_plot_L <- reactive({
+  plot_quant_pm25(pm25_list[[input$pm25_L]], input$pm25_L, cols = "#12436D")
+})
+
+quant_plot_R <- reactive({
+  plot_quant_pm25(pm25_list[[input$pm25_R]], input$pm25_R, cols = "#12436D")
+})
+
+# Output value boxes ----
+
+output$pm25_max_L <- renderText({
+  paste0(quant_max_L(), " µg/m³")
+})
+
+output$pm25_max_R <- renderText({
+  paste0(quant_max_R(), " µg/m³")
+})
+
+output$pm25_hours_L <- renderText({
+  paste0(quant_hours_L(), " hours")
+})
+
+output$pm25_hours_R <- renderText({
+  paste0(quant_hours_R(), " hours")
+})
+
+# Output left sensor ----
+
+output$pm25_plot_L <- renderPlot({
+  plot(quant_plot_L(), subset = "day.hour")
+})
+
+output$pm25_plot_L_month <- renderPlot({
+  plot(quant_plot_L(), subset = "month")
+})
+
+output$pm25_plot_L_day <- renderPlot({
+  plot(quant_plot_L(), subset = "day")
+})
+
+# Output Right Sensor ----
+
+output$pm25_plot_R <- renderPlot({
+  plot(quant_plot_R(), subset = "day.hour")
+})
+
+output$pm25_plot_R_month <- renderPlot({
+  plot(quant_plot_R(), subset = "month")
+})
+
+output$pm25_plot_R_day <- renderPlot({
+  plot(quant_plot_R(), subset = "day")
+})
+```

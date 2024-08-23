@@ -1,0 +1,132 @@
+---
+title: "Community Call September 2024"
+author: Simeon Ng
+date: "`r Sys.Date()`"
+format: html
+---
+
+```{r load}
+load("community_call_sept_2024.RData")
+```
+
+# Sensors by Community
+
+## Southcentral
+
+**Soldotna** \| Quant 460 \| Deployed 05/13/2024
+
+```{r pm25-soldotna}
+plot_quant_pm25(soldotna_pm25, "Soldotna", cols = "#12436D")
+```
+
+-   More variance on weekends.
+
+------------------------------------------------------------------------
+
+**Ninilchik** \| Quant 461 \| Deployed 05/13/2024
+
+```{r pm25-ninilchik}
+plot_quant_pm25(ninilchik_pm25, "Ninilchik", cols = "#12436D")
+```
+
+-   More variance on weekends. Peak around noon.
+
+------------------------------------------------------------------------
+
+**Homer** \| Quant 464 \| Deployed 05/14/2024
+
+```{r pm25-homer}
+plot_quant_pm25(homer_pm25, "Homer", cols = "#12436D")
+```
+
+-   More variance on weekends. Small peaks in morning & evening.
+
+------------------------------------------------------------------------
+
+**Seward** \| Quant 465 \| Deployed 06/05/2024
+
+```{r pm25-seward}
+plot_quant_pm25(seward_pm25, "Seward", cols = "#12436D")
+```
+
+-   Peak on weekends. Peaks in evening.
+
+## Southeast
+
+**Ketchikan** \| Quant 449 \| Deployed 01/31/2024
+
+```{r pm25-ketchikan}
+plot_quant_pm25(ketchikan_pm25, "Ketchikan", cols = "#12436D")
+```
+
+-   August wildfire effect? Peaks in morning & evening.
+
+------------------------------------------------------------------------
+
+**Haines** \| Quant 450 \| Deployed 01/30/2024
+
+```{r pm25-haines}
+plot_quant_pm25(haines_pm25, "Haines", cols = "#12436D")
+```
+
+-   August wildfire effect? Consistent levels throughout week.
+
+------------------------------------------------------------------------
+
+**Wrangell** \| Quant 451 \| Deployed 02/01/2024
+
+```{r pm25-wrangell}
+plot_quant_pm25(wrangell_pm25, "Wrangell", cols = "#12436D")
+```
+
+-   August wildfire effect? Consistent levels throughout week.
+
+------------------------------------------------------------------------
+
+**Hoonah** \| Quant 452 \| Deployed 01/30/2024
+
+```{r pm25-hoonah}
+plot_quant_pm25(hoonah_pm25, "Hoonah", cols = "#12436D")
+```
+
+-   Not affected by wildfires as much? Consistent levels throughout week.
+
+------------------------------------------------------------------------
+
+**Skagway** \| Quant 453 \| Deployed 01/31/2024
+
+```{r pm25-skagway}
+plot_quant_pm25(skagway_pm25, "Skagway", cols = "#12436D")
+```
+
+-   August wildfire effect? Levels rising through winter into summer.
+
+------------------------------------------------------------------------
+
+**Sitka** \| Quant 454 \| Deployed 03/21/2024
+
+```{r pm25-sitka}
+plot_quant_pm25(sitka_pm25, "Sitka", cols = "#12436D")
+```
+
+-   Peaks in mornings & evenings.
+
+------------------------------------------------------------------------
+
+**Juneau 5th St** \| Quant 455 \| Deployed 01/29/2024
+
+```{r pm25-jnu5th}
+plot_quant_pm25(juneau_5th_pm25, "Juneau 5th St", cols = "#12436D")
+```
+
+-   August wildfire effect? Peaks in mornings & evenings. Slightly lower on weekdays.
+
+------------------------------------------------------------------------
+
+**Juneau Museum** \| Quant 456 \| Deployed 01/29/2024
+
+```{r pm25-jnumus}
+plot_quant_pm25(juneau_mus_pm25, "Juneau Museum", cols = "#12436D")
+```
+
+-   August wildfire effect. Peaks in mornings & evenings. Slightly lower on weekdays.
