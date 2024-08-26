@@ -12,6 +12,8 @@ server: shiny
 
 *Data last updated: 08/23/2024*
 
+# Community Sensor Network Diurnal Comparisons
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo = FALSE,
@@ -43,11 +45,23 @@ soldotna_pm25 <- query_agileweb(
 ninilchik_pm25 <- query_agileweb(
   "Quant_MOD00461", "PM25", start = "2024-05-13T00:00:00", api_key =  key
 ) |> clean_pm25()
+ccsc_pm25 <- query_agileweb(
+  "Quant_MOD00462", "PM25", start = "2024-06-18T00:00:00", api_key = key
+) |> clean_pm25()
 homer_pm25 <- query_agileweb(
   "Quant_MOD00464", "PM25", start = "2024-05-14T00:00:00", api_key =  key
 ) |> clean_pm25()
 seward_pm25 <- query_agileweb(
   "Quant_MOD00465", "PM25", start = "2024-06-05T00:00:00", api_key = key
+) |> clean_pm25()
+talkeetna_pm25 <- query_agileweb(
+  "Quant_MOD00467", "PM25", start = "2024-07-01T00:00:00", api_key = key
+) |> clean_pm25()
+biglake_pm25 <- query_agileweb(
+  "Quant_MOD00468", "PM25", start = "2024-07-01T00:00:00", api_key = key
+) |> clean_pm25()
+kodiak_pm25 <- query_agileweb(
+  "Quant_MOD00660", "PM25", start = "2024-07-02T00:00:00", api_key = key
 ) |> clean_pm25()
 ```
 
@@ -97,11 +111,31 @@ goldstream_pm25 <- query_agileweb(
 denali_pm25 <- query_agileweb(
   "Quant_MOD00457", "PM25", start = "2024-06-12T00:00:00", api_key = key
 ) |> clean_pm25()
+nome_pm25 <- query_agileweb(
+  "Quant_MOD00654", "PM25", start = "2024-05-23T00:00:00", api_key = key
+) |> clean_pm25()
+kotzebue_pm25 <- query_agileweb(
+  "Quant_MOD00662", "PM25", start = "2024-07-09T00:00:00", api_key = key
+) |> clean_pm25()
+```
+
+```{r import-quant-permanent-pm25, eval=FALSE}
+anc_perm_pm25 <- query_agileweb(
+  "Quant_MOD00471", "PM25", start = "2023-10-03T00:00:00", api_key = key
+) |> clean_pm25()
+fbx_perm_pm25 <- query_agileweb(
+  "Quant_MOD00443", "PM25", start = "2023-11-20T00:00:00", api_key = key
+) |> clean_pm25()
+jnu_perm_pm25 <- query_agileweb(
+  "Quant_MOD00665", "PM25", start = "2024-04-29T00:00:00", api_key = key
+) |> clean_pm25()
 ```
 
 ```{r save, eval=FALSE}
 pm25_list <- list(
   "Badger" = badger_pm25,
+  "Big Lake" = biglake_pm25,
+  "Campbell Creek Science Center" = ccsc_pm25,
   "Delta Junction" = delta_pm25,
   "Denali NP" = denali_pm25,
   "Galena" = galena_pm25,
@@ -112,13 +146,20 @@ pm25_list <- list(
   "Juneau Museum" = juneau_mus_pm25,
   "Juneau 5th" = juneau_5th_pm25,
   "Ketchikan" = ketchikan_pm25,
+  "Kodiak" = kodiak_pm25,
+  "Kotzebue" = kotzebue_pm25,
   "Ninilchik" = ninilchik_pm25,
+  "Nome" = nome_pm25,
   "Seward" = seward_pm25,
   "Sitka" = sitka_pm25,
   "Skagway" = skagway_pm25,
   "Soldotna" = soldotna_pm25,
+  "Talkeetna" = talkeetna_pm25,
   "Tok" = tok_pm25,
-  "Wrangell" = wrangell_pm25
+  "Wrangell" = wrangell_pm25,
+  "Anchorage - Garden" = anc_perm_pm25,
+  "Fairbanks - NCore" = fbx_perm_pm25,
+  "Juneau - Floyd Dryden" = jnu_perm_pm25
 )
 rm(key)
 save.image("community_call_sept_2024.RData")
@@ -129,8 +170,6 @@ load("community_call_sept_2024.RData")
 ```
 
 ```{r ui}
-vb_theme_max <- value_box_theme(bg = "#12436D", fg = "#FFFFFF")
-
 fluidPage(
   br(),
   # Select sensor input ----
