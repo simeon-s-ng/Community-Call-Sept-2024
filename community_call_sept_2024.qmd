@@ -14,7 +14,8 @@ server: shiny
 
 # Community Sensor Network Diurnal Comparisons
 
-```{r setup, include=FALSE}
+```{r, include=FALSE}
+#| label: setup
 knitr::opts_chunk$set(
   echo = FALSE,
   message = FALSE,
@@ -25,7 +26,8 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r libraries, include=FALSE}
+```{r, include=FALSE}
+#| label: libraries
 library(tidyverse)
 library(keyring)
 library(akairmonitorr)
@@ -34,11 +36,13 @@ library(bslib)
 library(bsicons)
 ```
 
-```{r key, eval=FALSE}
+```{r, eval=FALSE}
+#| label: key
 key <- key_get("aa_key")
 ```
 
-```{r import-quant-southcentral-pm25, eval=FALSE}
+```{r, eval=FALSE}
+#| label: import-quant-southcentral-pm25
 soldotna_pm25 <- query_agileweb(
   "Quant_MOD00460", "PM25", start = "2024-05-13T00:00:00", api_key =  key
 ) |> clean_pm25()
@@ -65,7 +69,8 @@ kodiak_pm25 <- query_agileweb(
 ) |> clean_pm25()
 ```
 
-```{r import-quant-southeast-pm25, eval=FALSE}
+```{r, eval=FALSE}
+#| label: import-quant-southeast-pm25
 ketchikan_pm25 <- query_agileweb(
   "Quant_MOD00449", "PM25", start = "2024-01-31T00:00:00", api_key = key
 ) |> clean_pm25()
@@ -92,7 +97,8 @@ juneau_mus_pm25 <- query_agileweb(
 ) |> clean_pm25()
 ```
 
-```{r import-quant-interior-pm25, eval=FALSE}
+```{r, eval=FALSE}
+#| label: import-quant-interior-pm25
 tok_pm25 <- query_agileweb(
   "Quant_MOD00444", "PM25", start = "2023-10-26T00:00:00", api_key = key
 ) |> clean_pm25()
@@ -119,7 +125,8 @@ kotzebue_pm25 <- query_agileweb(
 ) |> clean_pm25()
 ```
 
-```{r import-quant-permanent-pm25, eval=FALSE}
+```{r, eval=FALSE}
+#| label: import-quant-permanent-pm25
 anc_perm_pm25 <- query_agileweb(
   "Quant_MOD00471", "PM25", start = "2023-10-03T00:00:00", api_key = key
 ) |> clean_pm25()
@@ -131,7 +138,8 @@ jnu_perm_pm25 <- query_agileweb(
 ) |> clean_pm25()
 ```
 
-```{r save, eval=FALSE}
+```{r, eval=FALSE}
+#| label: save
 pm25_list <- list(
   "Badger" = badger_pm25,
   "Big Lake" = biglake_pm25,
@@ -165,11 +173,13 @@ rm(key)
 save.image("community_call_sept_2024.RData")
 ```
 
-```{r load data}
+```{r}
+#| label: load-data
 load("community_call_sept_2024.RData")
 ```
 
-```{r ui}
+```{r}
+#| label: ui
 fluidPage(
   br(),
   # Select sensor input ----
@@ -272,7 +282,8 @@ fluidPage(
 )
 ```
 
-```{r server}
+```{r}
+#| label: server
 #| context: server
 library(shiny)
 library(tidyverse)
