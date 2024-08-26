@@ -200,7 +200,7 @@ fluidPage(
     column(
       3,
       value_box(
-        title = "Maximum PM2.5 Concentration",
+        title = "Maximum Hourly PM2.5 Concentration",
         value = textOutput("pm25_max_L"),
         showcase = bs_icon("chevron-bar-up"),
         theme = "bg-gradient-blue-green",
@@ -220,7 +220,7 @@ fluidPage(
     column(
       3,
       value_box(
-        title = "Maximum PM2.5 Concentration",
+        title = "Maximum Hourly PM2.5 Concentration",
         value = textOutput("pm25_max_R"),
         showcase = bs_icon("chevron-bar-up"),
         theme = "bg-gradient-blue-green",
