@@ -1,6 +1,6 @@
 ---
 title: "Community Call September 2024"
-author: Simeon Ng
+author: <a href="https://github.com/simeon-s-ng">Simeon Ng</a>
 date: "`r Sys.Date()`"
 format: 
   html:
@@ -10,7 +10,7 @@ format:
 server: shiny
 ---
 
-*Data last updated: 08/23/2024*
+*Data last updated: 08/26/2024* || [Project Github](https://github.com/simeon-s-ng/Community-Call-Sept-2024)
 
 # Community Sensor Network Diurnal Comparisons
 
@@ -356,3 +356,5 @@ output$pm25_plot_R_day <- renderPlot({
   plot(quant_plot_R(), subset = "day")
 })
 ```
+
+[Alaska Department of Environmental Conservation](https://dec.alaska.gov/) || [Air Monitoring & Quality Assurance](https://dec.alaska.gov/air/air-monitoring/)
