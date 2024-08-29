@@ -10,7 +10,7 @@ format:
 server: shiny
 ---
 
-*Data last updated: 08/26/2024* || [Project Github](https://github.com/simeon-s-ng/Community-Call-Sept-2024)
+*Data last updated: 08/29/2024* || [Project Github](https://github.com/simeon-s-ng/Community-Call-Sept-2024)
 
 # Community Sensor Network Diurnal Comparisons
 
@@ -34,6 +34,28 @@ library(akairmonitorr)
 library(shinyWidgets)
 library(bslib)
 library(bsicons)
+library(gt)
+```
+
+```{r, eval=FALSE}
+#| label: installed-quants
+quants <- read_csv("installs.csv", show_col_types = FALSE) |>
+  filter(
+    Status == "Installed", 
+    Location != "Napaskiak",
+    Location != "Bethel",
+    Location != "Fairbanks – Ncore",
+    Location != "Anchorage – Garden",
+    Location != "Juneau – Floyd Dryden") |> 
+  select(Location, 'Install Date', Notes) |>
+  arrange(Location) |> 
+  gt() |> 
+  tab_header(
+    title = "Alaska Community Quant Sensors Index"
+  ) |> 
+  tab_stubhead(label = "Location") |> 
+  opt_interactive() |> 
+  opt_stylize(style = 1, color = "blue")
 ```
 
 ```{r, eval=FALSE}
@@ -178,14 +200,24 @@ save.image("community_call_sept_2024.RData")
 load("community_call_sept_2024.RData")
 ```
 
+<details>
+  <summary>Click to see Alaska Community Quant Sensors Index</summary>
+
+```{r, echo=FALSE, eval=TRUE, results="markup"}
+quants
+```
+
+</details>
+
 ```{r}
 #| label: ui
+
 fluidPage(
   br(),
   # Select sensor input ----
   fluidRow(
     column(
-      6,
+      3,
       pickerInput(
         "pm25_L",
         "Select a sensor",
@@ -195,7 +227,16 @@ fluidPage(
       )
     ),
     column(
-      6,
+      3,
+      dateRangeInput(
+        'dateRangeL',
+        label = "Select a date range",
+        start = "2023-10-26", end = Sys.Date(),
+        separator = "-"
+      )
+    ),
+    column(
+      3,
       pickerInput(
         "pm25_R",
         "Select a sensor",
@@ -203,7 +244,16 @@ fluidPage(
         multiple = FALSE,
         selected = "Delta Junction"
       )
-    )
+    ),
+    column(
+      3,
+      dateRangeInput(
+        'dateRangeR',
+        label = "Select a date range",
+        start = "2023-10-26", end = Sys.Date(),
+        separator = "-"
+      )
+    ),
   ),
   # Output pm25 value cards ----
   fluidRow(
@@ -294,31 +344,61 @@ load("community_call_sept_2024.RData")
 # Reactive data ----
 
 quant_max_L <- reactive({
-  max(pm25_list[[input$pm25_L]]$pm25)
+  pm25_list[[input$pm25_L]] |> 
+    filter(date >= input$dateRangeL[1], date <= input$dateRangeL[2]) |> 
+    select(pm25) |> 
+    max()
 })
 
 quant_max_R <- reactive({
-  max(pm25_list[[input$pm25_R]]$pm25)
+  pm25_list[[input$pm25_R]] |> 
+    filter(date >= input$dateRangeR[1], date <= input$dateRangeR[2]) |> 
+    select(pm25) |> 
+    max()
 })
 
 quant_hours_L <- reactive({
   pm25_list[[input$pm25_L]] |> 
-    filter(pm25 >= 35) |> 
+    filter(
+      pm25 >= 35, 
+      date >= input$dateRangeL[1], 
+      date <= input$dateRangeL[2]
+    ) |> 
     summarise(n = n())
 })
 
 quant_hours_R <- reactive({
   pm25_list[[input$pm25_R]] |> 
-    filter(pm25 >= 35) |> 
+    filter(
+      pm25 >= 35,
+      date >= input$dateRangeR[1],
+      date <= input$dateRangeR[2]
+    ) |> 
     summarise(n = n())
 })
 
 quant_plot_L <- reactive({
-  plot_quant_pm25(pm25_list[[input$pm25_L]], input$pm25_L, cols = "#12436D")
+  plot_quant_pm25(
+    filter(
+      pm25_list[[input$pm25_L]], 
+      date >= input$dateRangeL[1], 
+      date <= input$dateRangeL[2]
+    ),
+    input$pm25_L,
+    cols = "#12436D"
+  )
 })
 
 quant_plot_R <- reactive({
-  plot_quant_pm25(pm25_list[[input$pm25_R]], input$pm25_R, cols = "#12436D")
+  plot_quant_pm25(
+    filter(
+      pm25_list[[input$pm25_R]], 
+      date >= input$dateRangeR[1], 
+      date <= input$dateRangeR[2]
+    ),
+    input$pm25_R,
+    cols = "#12436D"
+  )
 })
 
 # Output value boxes ----

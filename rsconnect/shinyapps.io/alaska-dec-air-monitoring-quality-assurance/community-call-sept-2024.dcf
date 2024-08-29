@@ -1,0 +1,10 @@
+name: community-call-sept-2024
+title: community_call_sept_2024
+username: alaska-dec-air-monitoring-quality-assurance
+account: alaska-dec-air-monitoring-quality-assurance
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12510543
+bundleId: 9040803
+url: https://alaska-dec-air-monitoring-quality-assurance.shinyapps.io/community-call-sept-2024/
+version: 1
