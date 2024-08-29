@@ -213,6 +213,22 @@ quants
 #| label: ui
 
 fluidPage(
+  tags$style(
+    ".form-control {
+      font-size: 14px;
+      height: 40px
+    }
+    .input-daterange input {
+      min-height: 40px
+    }
+    .form-control input {
+      font-size: 14px
+    }
+    .input-group-addon.input-group-prepend.input-group-append span {
+      height: 20px
+    }
+    "
+  ),
   br(),
   # Select sensor input ----
   fluidRow(
@@ -232,7 +248,7 @@ fluidPage(
         'dateRangeL',
         label = "Select a date range",
         start = "2023-10-26", end = Sys.Date(),
-        separator = "-"
+        separator = "-",
       )
     ),
     column(
