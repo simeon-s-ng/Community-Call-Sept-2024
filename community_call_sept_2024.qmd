@@ -4,13 +4,11 @@ author: <a href="https://github.com/simeon-s-ng">Simeon Ng</a>
 date: "`r Sys.Date()`"
 format: 
   html:
-    grid:
-      body-width: 1600px
-      gutter-width: 100px
+    page-layout: full
 server: shiny
 ---
 
-*Data last updated: 08/29/2024* || [Project Github](https://github.com/simeon-s-ng/Community-Call-Sept-2024)
+*Data last updated: 09/04/2024* || [Project Github](https://github.com/simeon-s-ng/Community-Call-Sept-2024)
 
 # Community Sensor Network Diurnal Comparisons
 
@@ -20,7 +18,7 @@ knitr::opts_chunk$set(
   echo = FALSE,
   message = FALSE,
   warning = FALSE,
-  fig.width = 10,
+  fig.width = 15,
   fig.height = 10,
   comment = ''
 )
@@ -30,6 +28,7 @@ knitr::opts_chunk$set(
 #| label: libraries
 library(tidyverse)
 library(keyring)
+library(openair)
 library(akairmonitorr)
 library(shinyWidgets)
 library(bslib)
@@ -186,10 +185,7 @@ pm25_list <- list(
   "Soldotna" = soldotna_pm25,
   "Talkeetna" = talkeetna_pm25,
   "Tok" = tok_pm25,
-  "Wrangell" = wrangell_pm25,
-  "Anchorage - Garden" = anc_perm_pm25,
-  "Fairbanks - NCore" = fbx_perm_pm25,
-  "Juneau - Floyd Dryden" = jnu_perm_pm25
+  "Wrangell" = wrangell_pm25
 )
 rm(key)
 save.image("community_call_sept_2024.RData")
@@ -233,7 +229,7 @@ fluidPage(
   # Select sensor input ----
   fluidRow(
     column(
-      3,
+      2,
       pickerInput(
         "pm25_L",
         "Select a sensor",
@@ -243,7 +239,7 @@ fluidPage(
       )
     ),
     column(
-      3,
+      4,
       dateRangeInput(
         'dateRangeL',
         label = "Select a date range",
@@ -252,7 +248,7 @@ fluidPage(
       )
     ),
     column(
-      3,
+      2,
       pickerInput(
         "pm25_R",
         "Select a sensor",
@@ -262,7 +258,7 @@ fluidPage(
       )
     ),
     column(
-      3,
+      4,
       dateRangeInput(
         'dateRangeR',
         label = "Select a date range",
@@ -272,48 +268,48 @@ fluidPage(
     ),
   ),
   # Output pm25 value cards ----
-  fluidRow(
-    column(
-      3,
-      value_box(
-        title = "Maximum Hourly PM2.5 Concentration",
-        value = textOutput("pm25_max_L"),
-        showcase = bs_icon("chevron-bar-up"),
-        theme = "bg-gradient-blue-green",
-        height = "150px"
-      )
-    ),
-    column(
-      3,
-      value_box(
-        title = "Hours over 9 µg/m³",
-        value = textOutput("pm25_hours_L"),
-        showcase = bs_icon("exclamation-triangle-fill"),
-        theme = "warning",
-        height = "150px"
-      )
-    ),
-    column(
-      3,
-      value_box(
-        title = "Maximum Hourly PM2.5 Concentration",
-        value = textOutput("pm25_max_R"),
-        showcase = bs_icon("chevron-bar-up"),
-        theme = "bg-gradient-blue-green",
-        height = "150px"
-      )
-    ),
-    column(
-      3,
-      value_box(
-        title = "Hours over 9 µg/m³",
-        value = textOutput("pm25_hours_R"),
-        showcase = bs_icon("exclamation-triangle-fill"),
-        theme = "warning",
-        height = "150px"
-      )
-    )
-  ),
+  # fluidRow(
+  #   column(
+  #     3,
+  #     value_box(
+  #       title = "Maximum Hourly PM2.5 Concentration",
+  #       value = textOutput("pm25_max_L"),
+  #       showcase = bs_icon("chevron-bar-up"),
+  #       theme = "bg-gradient-blue-green",
+  #       height = "150px"
+  #     )
+  #   ),
+  #   column(
+  #     3,
+  #     value_box(
+  #       title = "Hours over 9 µg/m³",
+  #       value = textOutput("pm25_hours_L"),
+  #       showcase = bs_icon("exclamation-triangle-fill"),
+  #       theme = "warning",
+  #       height = "150px"
+  #     )
+  #   ),
+  #   column(
+  #     3,
+  #     value_box(
+  #       title = "Maximum Hourly PM2.5 Concentration",
+  #       value = textOutput("pm25_max_R"),
+  #       showcase = bs_icon("chevron-bar-up"),
+  #       theme = "bg-gradient-blue-green",
+  #       height = "150px"
+  #     )
+  #   ),
+  #   column(
+  #     3,
+  #     value_box(
+  #       title = "Hours over 9 µg/m³",
+  #       value = textOutput("pm25_hours_R"),
+  #       showcase = bs_icon("exclamation-triangle-fill"),
+  #       theme = "warning",
+  #       height = "150px"
+  #     )
+  #   )
+  # ),
   # Output day&hour diurnal plots ----
   fluidRow(
     column(
@@ -465,3 +461,139 @@ output$pm25_plot_R_day <- renderPlot({
 ```
 
 [Alaska Department of Environmental Conservation](https://dec.alaska.gov/) || [Air Monitoring & Quality Assurance](https://dec.alaska.gov/air/air-monitoring/)
+
+---
+
+## Sensors by Ecoregion
+### Northern Southeast Alaska
+```{r}
+#| label: Northern Southeast Alaska
+eco_haines <- haines_pm25 |> rename(Haines = pm25)
+eco_hoonah <- hoonah_pm25 |> rename(Hoonah = pm25)
+eco_skagway <- skagway_pm25 |> rename(Skagway = pm25)
+eco_jnufifth <- juneau_5th_pm25 |> rename("Juneau 5th" = pm25)
+eco_jnumuseum <- juneau_mus_pm25 |> rename("Juneau Museum" = pm25)
+
+nse_sensors <- reduce(
+  list(
+    eco_jnufifth,
+    eco_jnumuseum,
+    eco_haines,
+    eco_hoonah,
+    eco_skagway
+  ),
+  left_join,
+  by = "date"
+) |> 
+  timeVariation(
+    pollutant = c("Juneau 5th", "Juneau Museum", "Haines", "Hoonah", "Skagway"),
+    statistic = "median",
+    ci = FALSE,
+    normalise = FALSE,
+    cols = "Set1",
+    ylab = "PM25 (µg/m³)",
+    main = expression(
+      bold('Northern Southeast Alaska PM'[2.5]*' Median Concentrations | 01/30/2024 - 09/03/2024')
+    ),
+    sub = expression(bold("median")),
+    fontsize = 14
+  )
+```
+
+### Southern Southeast Alaska
+```{r}
+#| label: Southern Southeast Alaska
+eco_ketchikan <- ketchikan_pm25 |> rename(Ketchikan = pm25)
+eco_wrangell <- wrangell_pm25 |> rename(Wrangell = pm25)
+eco_sitka <- sitka_pm25 |> rename(Sitka = pm25)
+
+sse_sensors <- reduce(
+  list(
+    eco_ketchikan,
+    eco_wrangell,
+    eco_sitka
+  ),
+  left_join,
+  by = "date"
+) |> 
+  timeVariation(
+    pollutant = c("Ketchikan", "Wrangell", "Sitka"),
+    statistic = "median",
+    ci = FALSE,
+    normalise = FALSE,
+    cols = "Set1",
+    ylab = "PM25 (µg/m³)",
+    main = expression(
+      bold('Southern Southeast Alaska PM'[2.5]*' Median Concentrations | 01/31/2024 - 09/03/2024')
+    ),
+    sub = expression(bold("median")),
+    fontsize = 14
+  )
+```
+
+### Southcentral Alaska
+```{r}
+#| label: Southcentral Alaska
+eco_soldotna <- soldotna_pm25 |> rename(Soldotna = pm25)
+eco_ninilchik <- ninilchik_pm25 |> rename(Ninilchik = pm25)
+eco_homer <- homer_pm25 |> rename(Homer = pm25)
+eco_seward <- seward_pm25 |> rename(Seward = pm25)
+
+sc_sensors <- reduce(
+  list(
+    eco_soldotna,
+    eco_ninilchik,
+    eco_homer,
+    eco_seward
+  ),
+  left_join,
+  by = "date"
+) |> 
+  timeVariation(
+    pollutant = c("Soldotna", "Ninilchik", "Homer", "Seward"),
+    statistic = "median",
+    ci = FALSE,
+    normalise = FALSE,
+    cols = "Set1",
+    ylab = "PM25 (µg/m³)",
+    main = expression(
+      bold('Southcentral Alaska PM'[2.5]*' Median Concentrations | 05/13/2024 - 09/03/2024')
+    ),
+    sub = expression(bold("median")),
+    fontsize = 14
+  )
+```
+
+### Interior Alaska
+```{r}
+#| label: Interior Alaska
+eco_tok <- tok_pm25 |> rename(Tok = pm25) |> filter(date >= "2023-11-01")
+eco_delta <- delta_pm25 |> rename(Delta = pm25)
+eco_goldstream <- goldstream_pm25 |> rename(Goldstream = pm25)
+eco_galena <- galena_pm25 |> rename(Galena = pm25)
+
+int_sensors <- reduce(
+  list(
+    eco_tok,
+    eco_delta,
+    eco_goldstream,
+    eco_galena
+  ),
+  left_join,
+  by = "date"
+) |> 
+  timeVariation(
+    pollutant = c("Tok", "Delta", "Goldstream", "Galena"),
+    statistic = "median",
+    ci = FALSE,
+    normalise = FALSE,
+    cols = "Set1",
+    ylab = expression('PM'[2.5]*' (µg/m³)'),
+    main = expression(
+      bold('Interior Alaska PM'[2.5]*' Median Concentrations | 10/27/2023 - 09/03/2024')
+    ),
+    sub = expression(bold("median")),
+    fontsize = 14,
+    auto.text = FALSE
+  )
+```
