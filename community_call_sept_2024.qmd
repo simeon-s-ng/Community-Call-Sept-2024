@@ -4,7 +4,9 @@ author: <a href="https://github.com/simeon-s-ng">Simeon Ng</a>
 date: "`r Sys.Date()`"
 format: 
   html:
-    page-layout: full
+    grid:
+      body-width: 1800px
+      gutter-width: 100px
 server: shiny
 ---
 
@@ -196,8 +198,13 @@ save.image("community_call_sept_2024.RData")
 load("community_call_sept_2024.RData")
 ```
 
+**Select** a sensor and a date range to see its diurnal plots.
+
+- The **dark blue lines** represent the <u>median</u> PM2.5 concentration (y-axis) within the plots variation of time (x-axis).
+- The **dark blue areas** above the median represent the <u>25th/75th percentiles</u> of PM2.5 concentration within the plots variation of time, while the **light blue areas** above and below the 25/75 represent the <u>upper and lower quartiles</u> respectively.
+
 <details>
-  <summary>Click to see Alaska Community Quant Sensors Index</summary>
+  <summary><b>Click Here</b> to see the Alaska Community Quant Sensors Index</summary>
 
 ```{r, echo=FALSE, eval=TRUE, results="markup"}
 quants
